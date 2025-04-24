@@ -1,0 +1,61 @@
+WHITESPACE = _{ " " | "\t" | "\n" | "\r" }
+COMMENT = _{ ";;" ~ (!"\n" ~ ANY)* ~ ("\n" | EOI) }
+
+program = { SOI ~ module ~ EOI }
+
+module = { "(" ~ "mod" ~ identifier ~ (import | struct_def | fn_def | export)* ~ ")" }
+
+import = { "(" ~ "import" ~ identifier ~ identifier ~ "->" ~ ty ~ ")" }
+
+struct_def = { "(" ~ "struct" ~ identifier ~ field* ~ ")" }
+field = { "(" ~ identifier ~ ty ~ ")" }
+
+fn_def = { "(" ~ "fn" ~ identifier ~ param* ~ "->" ~ ty ~ block ~ ")" }
+param = { "(" ~ identifier ~ ty ~ ")" }
+
+export = { "(" ~ "export" ~ identifier ~ ")" }
+
+stmt = { let_stmt | set_stmt | return_stmt | if_stmt | loop_stmt | for_stmt | break_stmt | expr }
+let_stmt = { "(" ~ "let" ~ identifier ~ ty? ~ expr ~ ")" }
+set_stmt = { "(" ~ "set" ~ identifier ~ expr ~ ")" }
+return_stmt = { "(" ~ "return" ~ expr ~ ")" }
+if_stmt = { "(" ~ "if" ~ expr ~ stmt ~ stmt? ~ ")" }
+loop_stmt = { "(" ~ "loop" ~ block ~ ")" }
+for_stmt = { "(" ~ "for" ~ identifier ~ expr ~ expr ~ block ~ ")" }
+break_stmt = { "(" ~ "break" ~ ")" }
+
+block = { stmt* }
+
+expr = { identifier | literal | operation | struct_literal | field_access }
+
+struct_literal = { "(" ~ identifier ~ field_init* ~ ")" }
+field_init = { "(" ~ identifier ~ expr ~ ")" }
+field_access = { "(" ~ "." ~ expr ~ identifier ~ ")" }
+
+operation = { "(" ~ (identifier | operator) ~ expr* ~ ")" }
+operator = {
+    "+" | "-" | "*" | "/" | "%"
+  | "<=" | ">=" | "<" | ">" | "=" | "!="
+  | "and" | "or" | "not"
+  | "array.get" | "array.set" | "array.new" | "array.length"
+  | "string.get" | "string.set" | "string.new" | "string.length" | "string.concat"
+  | "tensor.add" | "tensor.sub" | "tensor.matmul" | "tensor.const" | "tensor.reshape"
+  | "model.infer"
+  | "stream.map" | "stream.filter"
+}
+
+literal = _{ integer | float | string | array | tensor }
+
+integer = @{ "-"? ~ ASCII_DIGIT+ }
+float = @{ "-"? ~ ASCII_DIGIT+ ~ "." ~ ASCII_DIGIT+ }
+string = @{ "\"" ~ (!"\"" ~ ANY)* ~ "\"" }
+array = { "[" ~ (literal | expr)* ~ "]" }
+tensor = { "{" ~ (float | expr)* ~ "}" }
+
+ty = { type_base | type_array | type_stream | type_function | identifier }
+type_base = { "int" | "float" | "string" | "tensor" }
+type_array = { "array" ~ "[" ~ ty ~ "]" }
+type_stream = { "stream" ~ "[" ~ ty ~ "]" }
+type_function = { "(" ~ (ty)* ~ "->" ~ ty ~ ")" }
+
+identifier = @{ ASCII_ALPHA ~ ASCII_ALPHANUMERIC* }
