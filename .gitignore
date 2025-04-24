@@ -2,5 +2,4 @@
 Cargo.lock
 .idea
 .vscode
-test.lum
-test.wasm
+fibonacci.*

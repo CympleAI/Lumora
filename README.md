@@ -9,7 +9,7 @@ Lumora is a statically typed, S-expression-based programming language designed f
 - Cross-Platform: Runs on browsers, servers, and edge devices, leveraging WASM's sandboxed security.
 
 ## Example
-Here's a Lumora program to compute the `fibonacci.lum`:
+Here's a Lumora program example `fibonacci.lum`:
 ```lisp
 (mod main
   (fn fib (n int) -> int
@@ -22,8 +22,10 @@ Here's a Lumora program to compute the `fibonacci.lum`:
 )
 ```
 
-Compile `cargo run fibonacci.lum fibonacci.wasm`
-Try run `wasmtime fibonacci.wasm --invoke fib 10`
+1. Compile `cargo run fibonacci.lum fibonacci.wasm`
+2. Try run `wasmtime fibonacci.wasm --invoke fib 10`
+
+or `cargo run --example fibonacci`
 
 ## License
 

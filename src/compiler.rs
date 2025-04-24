@@ -856,9 +856,9 @@ impl Compiler {
                 arg_type
             }
             _ => {
-                println!("func_op: {}", op);
+                // println!("func_op: {}", op);
                 if let Some(&func_idx) = self.function_indices.get(op) {
-                    println!("func_idx: {}", func_idx);
+                    // println!("func_idx: {}", func_idx);
                     for arg in args {
                         self.compile_expr(env, arg, instructions)?;
                     }
